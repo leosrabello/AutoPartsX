@@ -1,0 +1,13 @@
+<resources>
+
+    <!--
+        Tema básico só pra inicialização da Activity.
+        Depois o Compose aplica o visual de verdade (AutoPartsTheme).
+        Esse parent existe em qualquer projeto com AppCompat.
+    -->
+    <style name="Theme.AutoPartsX" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <!-- você pode colocar overrides aqui se quiser -->
+    </style>
+
+</resources>
+

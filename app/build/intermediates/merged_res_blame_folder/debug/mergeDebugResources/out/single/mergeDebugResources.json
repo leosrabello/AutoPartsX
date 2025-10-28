@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-debug-51:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-main-53:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-debug-51:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-main-53:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-debug-51:/drawable_logo_autopartsx.png.flat",
+        "source": "/Users/leonardorabello/.gradle/daemon/8.14/com.autopartsx.autopartsapp-main-53:/drawable/logo_autopartsx.png"
+    },
+    {
+        "merged": "com.autopartsx.autopartsapp-debug-51:/drawable_logo_autopartsx.png.flat",
+        "source": "com.autopartsx.autopartsapp-main-53:/drawable/logo_autopartsx.png"
+    }
+]
