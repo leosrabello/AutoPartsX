@@ -38,6 +38,16 @@ fun PartFormScreen(
     var brand by remember { mutableStateOf(existing?.brand ?: "") }
     var priceTxt by remember { mutableStateOf(existing?.price?.toString() ?: "") }
     var desc by remember { mutableStateOf(existing?.description ?: "") }
+    var category by remember { mutableStateOf(part?.category ?: "") }
+
+    Spacer(modifier = Modifier.height(8.dp))
+    OutlinedTextField(
+        value = category,
+        onValueChange = { category = it },
+        label = { Text("Categoria (ex.: Motor, Freios)") },
+        modifier = Modifier.fillMaxWidth()
+    )
+
 
     val msg by partViewModel.partMessage
 
@@ -111,14 +121,16 @@ fun PartFormScreen(
                                 name = name,
                                 brand = brand,
                                 price = priceDouble,
-                                desc = desc
+                                desc = desc,
+                                category = category.ifBlank { null }
                             )
                         } else {
                             partViewModel.addPart(
                                 name = name,
                                 brand = brand,
                                 price = priceDouble,
-                                desc = desc
+                                desc = desc,
+                                category = if (category.isBlank()) "Outros" else category
                             )
                         }
                         if (ok) {

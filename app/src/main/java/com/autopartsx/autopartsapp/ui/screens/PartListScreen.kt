@@ -25,6 +25,11 @@ fun PartListScreen(
     onLogout: () -> Unit
 ) {
     val parts = partViewModel.parts
+    var selectedCategory by remember { mutableStateOf("Todos") }
+    val visibleParts = remember(parts, selectedCategory) {
+        if (selectedCategory == "Todos") parts
+        else parts.filter { it.category.equals(selectedCategory, ignoreCase = true) }
+    }
     val msg by partViewModel.partMessage
     val user = authViewModel.currentUser.value
 
@@ -35,12 +40,8 @@ fun PartListScreen(
                     Text("Peças (${user?.name ?: "deslogado"})")
                 },
                 actions = {
-                    TextButton(onClick = onGoCart) {
-                        Text("Carrinho")
-                    }
-                    TextButton(onClick = onLogout) {
-                        Text("Sair")
-                    }
+                    TextButton(onClick = onGoCart) { Text("Carrinho") }
+                    TextButton(onClick = onLogout) { Text("Sair") }
                 }
             )
         },
@@ -62,17 +63,36 @@ fun PartListScreen(
                 Spacer(Modifier.height(8.dp))
             }
 
+            // ---------- ABA DE CATEGORIAS (filtro) ----------
+            ScrollableTabRow(
+                selectedTabIndex = partViewModel.categories.indexOf(selectedCategory)
+                    .coerceAtLeast(0)
+            ) {
+                partViewModel.categories.forEach { cat ->
+                    Tab(
+                        selected = selectedCategory == cat,
+                        onClick = { selectedCategory = cat },
+                        text = { Text(cat) }
+                    )
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+            // -------------------------------------------------
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(parts) { part ->
+                items(visibleParts) { part ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 12.dp)
                     ) {
                         Column(Modifier.padding(16.dp)) {
-                            Text("${part.name} - ${part.brand}", style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                "${part.name} - ${part.brand}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
                             Text("R$ ${((part.price * 100.0).roundToInt() / 100.0)}")
                             Spacer(Modifier.height(4.dp))
                             Text(part.description, style = MaterialTheme.typography.bodySmall)
