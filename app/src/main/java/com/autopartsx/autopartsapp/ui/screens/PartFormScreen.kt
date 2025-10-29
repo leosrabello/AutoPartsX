@@ -13,7 +13,7 @@ import com.autopartsx.autopartsapp.viewmodel.PartViewModel
 fun PartFormScreen(
     partId: Int,
     partViewModel: PartViewModel,
-    onSaved: () -> Unit
+    onSaved: () -> Unit,         // também será usado para fechar após excluir
 ) {
     val editing = partId != -1
     val existing = if (editing) partViewModel.getPartById(partId) else null
@@ -25,11 +25,22 @@ fun PartFormScreen(
     var category by remember(existing) { mutableStateOf(existing?.category ?: "") }
 
     val msg by partViewModel.partMessage
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (editing) "Editar Peça" else "Nova Peça") }
+                title = { Text(if (editing) "Editar Peça" else "Nova Peça") },
+                actions = {
+                    if (editing) {
+                        TextButton(
+                            onClick = { showDeleteDialog = true },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
+                        ) { Text("Excluir") }
+                    }
+                }
             )
         }
     ) { padding ->
@@ -93,7 +104,6 @@ fun PartFormScreen(
                 Button(
                     onClick = {
                         val priceDouble = priceTxt.replace(',', '.').toDoubleOrNull()
-
                         val ok = if (editing) {
                             partViewModel.updatePart(
                                 id = partId,
@@ -115,10 +125,33 @@ fun PartFormScreen(
                         if (ok) onSaved()
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Salvar")
-                }
+                ) { Text("Salvar") }
             }
         }
+    }
+
+    // --- Confirmação de exclusão ---
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Excluir peça") },
+            text = { Text("Tem certeza que deseja excluir esta peça? Essa ação não pode ser desfeita.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Se seu deletePart retornar Boolean, você pode checar antes de fechar
+                        partViewModel.deletePart(partId)
+                        showDeleteDialog = false
+                        onSaved() // volta para a tela anterior
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) { Text("Excluir") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancelar") }
+            }
+        )
     }
 }

@@ -1,4 +1,4 @@
-#Wed Oct 29 12:15:06 GMT-03:00 2025
+#Wed Oct 29 12:23:09 GMT-03:00 2025
 base.0=/Users/leonardorabello/Downloads/AutoPartsX/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/Users/leonardorabello/Downloads/AutoPartsX/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
 base.2=/Users/leonardorabello/Downloads/AutoPartsX/app/build/intermediates/dex/debug/mergeProjectDexDebug/13/classes.dex
