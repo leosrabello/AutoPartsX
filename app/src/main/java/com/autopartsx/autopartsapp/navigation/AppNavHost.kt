@@ -26,6 +26,7 @@ fun AppNavHost(
         navController = navController,
         startDestination = "login"
     ) {
+        // --- LOGIN ---
         composable("login") {
             LoginScreen(
                 onLoginSuccess = {
@@ -38,6 +39,7 @@ fun AppNavHost(
             )
         }
 
+        // --- REGISTRO ---
         composable("register") {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -50,6 +52,7 @@ fun AppNavHost(
             )
         }
 
+        // --- LISTA DE PEÇAS ---
         composable("parts") {
             PartListScreen(
                 authViewModel = authViewModel,
@@ -69,22 +72,25 @@ fun AppNavHost(
             )
         }
 
+        // --- FORMULÁRIO DE PEÇAS ---
         composable(
             route = "partForm/{partId}",
             arguments = listOf(
-                navArgument("partId") { type = NavType.IntType }
+                navArgument("partId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
             )
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("partId") ?: -1
             PartFormScreen(
                 partId = id,
                 partViewModel = partViewModel,
-                onSaved = {
-                    navController.popBackStack()
-                }
+                onSaved = { navController.popBackStack() }
             )
         }
 
+        // --- CARRINHO ---
         composable("cart") {
             CartScreen(
                 cartViewModel = cartViewModel,

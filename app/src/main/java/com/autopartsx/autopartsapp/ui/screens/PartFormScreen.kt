@@ -1,24 +1,8 @@
 package com.autopartsx.autopartsapp.ui.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,20 +18,11 @@ fun PartFormScreen(
     val editing = partId != -1
     val existing = if (editing) partViewModel.getPartById(partId) else null
 
-    var name by remember { mutableStateOf(existing?.name ?: "") }
-    var brand by remember { mutableStateOf(existing?.brand ?: "") }
-    var priceTxt by remember { mutableStateOf(existing?.price?.toString() ?: "") }
-    var desc by remember { mutableStateOf(existing?.description ?: "") }
-    var category by remember { mutableStateOf(part?.category ?: "") }
-
-    Spacer(modifier = Modifier.height(8.dp))
-    OutlinedTextField(
-        value = category,
-        onValueChange = { category = it },
-        label = { Text("Categoria (ex.: Motor, Freios)") },
-        modifier = Modifier.fillMaxWidth()
-    )
-
+    var name by remember(existing) { mutableStateOf(existing?.name ?: "") }
+    var brand by remember(existing) { mutableStateOf(existing?.brand ?: "") }
+    var priceTxt by remember(existing) { mutableStateOf(existing?.price?.toString() ?: "") }
+    var desc by remember(existing) { mutableStateOf(existing?.description ?: "") }
+    var category by remember(existing) { mutableStateOf(existing?.category ?: "") }
 
     val msg by partViewModel.partMessage
 
@@ -69,12 +44,8 @@ fun PartFormScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 if (msg != null) {
-                    Text(
-                        msg ?: "",
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Text(msg ?: "", color = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.height(8.dp))
                 }
 
@@ -94,7 +65,6 @@ fun PartFormScreen(
                 )
                 Spacer(Modifier.height(8.dp))
 
-                // campo preço agora é só texto comum
                 OutlinedTextField(
                     value = priceTxt,
                     onValueChange = { priceTxt = it },
@@ -110,11 +80,20 @@ fun PartFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3
                 )
+                Spacer(Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = category,
+                    onValueChange = { category = it },
+                    label = { Text("Categoria (ex.: Motor, Freios)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Spacer(Modifier.height(16.dp))
 
                 Button(
                     onClick = {
-                        val priceDouble = priceTxt.toDoubleOrNull()
+                        val priceDouble = priceTxt.replace(',', '.').toDoubleOrNull()
+
                         val ok = if (editing) {
                             partViewModel.updatePart(
                                 id = partId,
@@ -122,7 +101,7 @@ fun PartFormScreen(
                                 brand = brand,
                                 price = priceDouble,
                                 desc = desc,
-                                category = category.ifBlank { null }
+                                category = category.takeIf { it.isNotBlank() }
                             )
                         } else {
                             partViewModel.addPart(
@@ -133,9 +112,7 @@ fun PartFormScreen(
                                 category = if (category.isBlank()) "Outros" else category
                             )
                         }
-                        if (ok) {
-                            onSaved()
-                        }
+                        if (ok) onSaved()
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
